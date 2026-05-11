@@ -166,8 +166,11 @@
 <script>${mdjs}</script>
 <script>
 (function(){
+  // html: false — don't pass raw HTML through. Defense in depth: even though
+  // the iframe is sandboxed with a null origin (no parent DOM access), avoiding
+  // raw HTML emission removes a phishing-UI surface inside the viewer.
   const md = window.markdownit({
-    html: true, linkify: true, typographer: true, breaks: false,
+    html: false, linkify: true, typographer: true, breaks: false,
     highlight: function(str, lang){
       if (lang && hljs.getLanguage(lang)) {
         try { return hljs.highlight(str, {language: lang}).value; } catch(e){}

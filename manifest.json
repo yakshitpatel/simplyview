@@ -3,21 +3,16 @@
   "name": "SimplyView",
   "version": "1.0.0",
   "description": "Render HTML, Markdown, JSON & 30+ programming languages inline — actually view your files instead of staring at source code.",
-  "permissions": ["activeTab"],
   "host_permissions": [
     "https://drive.google.com/*",
-    "https://drive.usercontent.google.com/*",
-    "https://docs.google.com/*"
+    "https://drive.usercontent.google.com/*"
   ],
   "background": {
     "service_worker": "background.js"
   },
   "content_scripts": [
     {
-      "matches": [
-        "https://drive.google.com/file/*",
-        "https://drive.google.com/drive/*"
-      ],
+      "matches": ["https://drive.google.com/file/d/*"],
       "js": ["renderers.js", "content.js"],
       "run_at": "document_idle"
     }

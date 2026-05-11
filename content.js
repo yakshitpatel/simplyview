@@ -230,7 +230,7 @@
             <button data-act="close" title="Close (Esc)" aria-label="Close">${ICONS.close}</button>
           </div>
         </div>
-        <iframe sandbox="allow-same-origin allow-scripts allow-forms allow-popups"></iframe>
+        <iframe sandbox="allow-scripts allow-forms allow-popups"></iframe>
       </div>
       <div class="dr-foot">
         <span class="dr-brand"><span class="dot"></span> SimplyView</span>
@@ -322,20 +322,42 @@
   };
 
   let lastUrl = location.href;
-  let lastSupported = !!getTypeInfo();
-  const tick = () => {
+  const update = () => {
     if (location.href !== lastUrl) {
       lastUrl = location.href;
       removeButton();
     }
-    const supported = !!getTypeInfo();
-    if (supported !== lastSupported) {
-      lastSupported = supported;
-      if (!supported) removeButton();
-    }
-    injectButton();
+    if (getTypeInfo()) injectButton();
+    else removeButton();
   };
 
-  setInterval(tick, 800);
-  tick();
+  // Drive is a single-page app — it updates <title> when the user navigates
+  // between files. Observe the title element (event-driven, zero polling).
+  const observeTitle = () => {
+    const titleEl = document.querySelector("title");
+    if (!titleEl) return false;
+    new MutationObserver(update).observe(titleEl, {
+      childList: true,
+      characterData: true,
+      subtree: true,
+    });
+    return true;
+  };
+
+  if (!observeTitle()) {
+    // <title> doesn't exist yet at document_idle — wait for it via a one-shot
+    // head observer, then attach the real title observer.
+    const headObs = new MutationObserver(() => {
+      if (observeTitle()) {
+        headObs.disconnect();
+        update();
+      }
+    });
+    headObs.observe(document.head, { childList: true });
+  }
+
+  // Browser back/forward (popstate is reachable from the isolated world).
+  window.addEventListener("popstate", update);
+
+  update();
 })();
