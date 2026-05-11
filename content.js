@@ -234,10 +234,16 @@
       );
     });
 
+  let currentBlobUrl = null;
+
   const closeOverlay = () => {
     const el = document.getElementById(OVERLAY_ID);
     if (el) el.remove();
     document.documentElement.style.overflow = "";
+    if (currentBlobUrl) {
+      URL.revokeObjectURL(currentBlobUrl);
+      currentBlobUrl = null;
+    }
   };
 
   const openInNewTab = (html) => {
@@ -279,8 +285,12 @@
       </div>
     `;
 
+    // Use Blob URL instead of srcdoc — srcdoc chokes on large (250KB+) inline
+    // payloads and gets weird with HTML-entity escaping. Blob URLs are clean.
     const iframe = overlay.querySelector("iframe");
-    iframe.srcdoc = html;
+    const blob = new Blob([html], { type: "text/html" });
+    currentBlobUrl = URL.createObjectURL(blob);
+    iframe.src = currentBlobUrl;
 
     overlay.addEventListener("click", (e) => {
       if (e.target === overlay) closeOverlay();

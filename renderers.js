@@ -166,29 +166,37 @@
 <script>${mdjs}</script>
 <script>
 (function(){
-  // html: false — don't pass raw HTML through. Defense in depth: even though
-  // the iframe is sandboxed with a null origin (no parent DOM access), avoiding
-  // raw HTML emission removes a phishing-UI surface inside the viewer.
-  const md = window.markdownit({
-    html: false, linkify: true, typographer: true, breaks: false,
-    highlight: function(str, lang){
-      if (lang && hljs.getLanguage(lang)) {
-        try { return hljs.highlight(str, {language: lang}).value; } catch(e){}
+  try {
+    if (typeof window.markdownit !== 'function') {
+      throw new Error('markdown-it library failed to load');
+    }
+    if (typeof window.hljs === 'undefined') {
+      throw new Error('highlight.js library failed to load');
+    }
+    // html: false — defense in depth even with null-origin sandbox.
+    const md = window.markdownit({
+      html: false, linkify: true, typographer: true, breaks: false,
+      highlight: function(str, lang){
+        if (lang && hljs.getLanguage(lang)) {
+          try { return hljs.highlight(str, {language: lang}).value; } catch(e){}
+        }
+        try { return hljs.highlightAuto(str).value; } catch(e){}
+        return '';
       }
-      try { return hljs.highlightAuto(str).value; } catch(e){}
-      return '';
-    }
-  });
-  const RAW = ${JSON.stringify(raw)};
-  document.getElementById('content').innerHTML = md.render(RAW);
-  // GFM-style task list checkboxes
-  document.querySelectorAll('li').forEach(function(li){
-    if(/^\\s*\\[[ xX]\\]\\s/.test(li.textContent)){
-      li.innerHTML = li.innerHTML.replace(/^\\s*\\[(.)\\]\\s/, function(_,m){
-        return '<input type="checkbox" disabled '+(m.trim()?'checked':'')+'>';
-      });
-    }
-  });
+    });
+    const RAW = ${JSON.stringify(raw).replace(/<\/script/gi, "<\\/script")};
+    document.getElementById('content').innerHTML = md.render(RAW);
+    // GFM-style task list checkboxes
+    document.querySelectorAll('li').forEach(function(li){
+      if(/^\\s*\\[[ xX]\\]\\s/.test(li.textContent)){
+        li.innerHTML = li.innerHTML.replace(/^\\s*\\[(.)\\]\\s/, function(_,m){
+          return '<input type="checkbox" disabled '+(m.trim()?'checked':'')+'>';
+        });
+      }
+    });
+  } catch (e) {
+    document.body.innerHTML = '<div style="padding:24px;font:14px/1.5 ui-sans-serif,sans-serif;color:#cf222e"><b>SimplyView render error</b><br><br>' + String(e && e.message || e).replace(/[<>&]/g,'') + '</div>';
+  }
 })();
 </script>
 </body></html>`;
@@ -241,13 +249,19 @@
 <script>${hljsjs}</script>
 <script>
   (function(){
-    const el = document.getElementById('raw');
-    try { hljs.highlightElement(el); } catch(e){}
-    // line numbers
-    const lines = el.innerHTML.split('\\n');
-    el.innerHTML = lines.map(function(l,i){
-      return '<span class="ln">'+(i+1)+'</span>'+l;
-    }).join('\\n');
+    try {
+      if (typeof window.hljs === 'undefined') {
+        throw new Error('highlight.js library failed to load');
+      }
+      const el = document.getElementById('raw');
+      try { hljs.highlightElement(el); } catch(e){}
+      const lines = el.innerHTML.split('\\n');
+      el.innerHTML = lines.map(function(l,i){
+        return '<span class="ln">'+(i+1)+'</span>'+l;
+      }).join('\\n');
+    } catch (e) {
+      document.body.innerHTML = '<div style="padding:24px;font:14px/1.5 ui-sans-serif,sans-serif;color:#cf222e"><b>SimplyView render error</b><br><br>' + String(e && e.message || e).replace(/[<>&]/g,'') + '</div>';
+    }
   })();
 </script>
 </body></html>`;
@@ -320,7 +334,7 @@
 <div id="root" class="tree"></div>
 <script>
 (function(){
-  const RAW = ${JSON.stringify(raw)};
+  const RAW = ${JSON.stringify(raw).replace(/<\/script/gi, "<\\/script")};
   let data;
   try { data = JSON.parse(RAW); }
   catch(e){
