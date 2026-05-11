@@ -1,0 +1,315 @@
+/* SimplyView — renderer styles
+   Loaded by renderer.html. Mode-specific blocks are activated by setting a
+   data-mode attribute on <body>. */
+
+:root {
+  color-scheme: light dark;
+}
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+body {
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue",
+    Arial, sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+  color: #1f2328;
+  background: #fff;
+}
+@media (prefers-color-scheme: dark) {
+  body {
+    color: #e6edf3;
+    background: #0d1117;
+  }
+}
+
+#content.loading {
+  padding: 40px 48px;
+  color: #71717a;
+  font-size: 14px;
+}
+
+/* ───────────────────── Markdown mode ───────────────────── */
+body[data-mode="markdown"] #content {
+  padding: 40px 48px 80px;
+  max-width: 920px;
+  margin: 0 auto;
+  font-size: 16px;
+}
+body[data-mode="markdown"] h1,
+body[data-mode="markdown"] h2,
+body[data-mode="markdown"] h3,
+body[data-mode="markdown"] h4,
+body[data-mode="markdown"] h5,
+body[data-mode="markdown"] h6 {
+  font-weight: 600;
+  line-height: 1.25;
+  margin: 24px 0 16px;
+}
+body[data-mode="markdown"] h1 {
+  font-size: 2em;
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.2);
+}
+body[data-mode="markdown"] h2 {
+  font-size: 1.5em;
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.2);
+}
+body[data-mode="markdown"] h3 {
+  font-size: 1.25em;
+}
+body[data-mode="markdown"] h4 {
+  font-size: 1em;
+}
+body[data-mode="markdown"] p {
+  margin: 0 0 16px;
+}
+body[data-mode="markdown"] a {
+  color: #0969da;
+  text-decoration: none;
+}
+body[data-mode="markdown"] a:hover {
+  text-decoration: underline;
+}
+@media (prefers-color-scheme: dark) {
+  body[data-mode="markdown"] a {
+    color: #2f81f7;
+  }
+}
+body[data-mode="markdown"] code {
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+  font-size: 85%;
+  padding: 0.2em 0.4em;
+  border-radius: 6px;
+  background: rgba(175, 184, 193, 0.2);
+}
+body[data-mode="markdown"] pre {
+  background: #f6f8fa;
+  color: #1f2328;
+  padding: 16px;
+  border-radius: 8px;
+  overflow: auto;
+  font-size: 14px;
+  line-height: 1.5;
+}
+@media (prefers-color-scheme: dark) {
+  body[data-mode="markdown"] pre {
+    background: #0d1117;
+    color: #e6edf3;
+  }
+}
+body[data-mode="markdown"] pre code {
+  background: transparent;
+  padding: 0;
+  font-size: 100%;
+}
+body[data-mode="markdown"] blockquote {
+  margin: 0 0 16px;
+  padding: 0 1em;
+  border-left: 0.25em solid #d0d7de;
+  color: #59636e;
+}
+@media (prefers-color-scheme: dark) {
+  body[data-mode="markdown"] blockquote {
+    border-left-color: #3d444d;
+    color: #9198a1;
+  }
+}
+body[data-mode="markdown"] ul,
+body[data-mode="markdown"] ol {
+  padding-left: 2em;
+  margin: 0 0 16px;
+}
+body[data-mode="markdown"] li + li {
+  margin-top: 0.25em;
+}
+body[data-mode="markdown"] img {
+  max-width: 100%;
+}
+body[data-mode="markdown"] hr {
+  border: 0;
+  border-top: 1px solid rgba(128, 128, 128, 0.3);
+  margin: 24px 0;
+}
+body[data-mode="markdown"] table {
+  border-collapse: collapse;
+  margin: 0 0 16px;
+  display: block;
+  overflow: auto;
+}
+body[data-mode="markdown"] th,
+body[data-mode="markdown"] td {
+  border: 1px solid rgba(128, 128, 128, 0.3);
+  padding: 6px 13px;
+}
+body[data-mode="markdown"] tr:nth-child(2n) {
+  background: rgba(128, 128, 128, 0.08);
+}
+body[data-mode="markdown"] input[type="checkbox"] {
+  margin-right: 6px;
+}
+
+/* ───────────────────── Code mode ───────────────────── */
+body[data-mode="code"] .toolbar,
+body[data-mode="json"] .toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid rgba(128, 128, 128, 0.2);
+  padding: 10px 16px;
+  font-size: 12px;
+  color: #59636e;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+@media (prefers-color-scheme: dark) {
+  body[data-mode="code"] .toolbar,
+  body[data-mode="json"] .toolbar {
+    background: rgba(13, 17, 23, 0.92);
+    color: #9198a1;
+  }
+}
+body[data-mode="code"] .toolbar .lang,
+body[data-mode="json"] .toolbar .stats {
+  font-weight: 600;
+  margin-right: auto;
+}
+body[data-mode="code"] .toolbar button,
+body[data-mode="json"] .toolbar button,
+body[data-mode="json"] .toolbar input {
+  font: inherit;
+  background: transparent;
+  color: inherit;
+  border: 1px solid rgba(128, 128, 128, 0.3);
+  border-radius: 6px;
+  padding: 4px 10px;
+}
+body[data-mode="code"] .toolbar button,
+body[data-mode="json"] .toolbar button {
+  cursor: pointer;
+}
+body[data-mode="code"] .toolbar button:hover,
+body[data-mode="json"] .toolbar button:hover {
+  background: rgba(128, 128, 128, 0.12);
+}
+body[data-mode="json"] .toolbar input {
+  min-width: 200px;
+}
+
+body[data-mode="code"] pre {
+  margin: 0;
+  padding: 20px 24px;
+  font:
+    13px/1.55 ui-monospace,
+    SFMono-Regular,
+    "SF Mono",
+    Menlo,
+    Consolas,
+    monospace;
+}
+body[data-mode="code"] pre code {
+  display: block;
+}
+body[data-mode="code"] .ln {
+  display: inline-block;
+  width: 3.5em;
+  padding-right: 1em;
+  text-align: right;
+  color: rgba(128, 128, 128, 0.55);
+  user-select: none;
+}
+
+/* ───────────────────── JSON mode ───────────────────── */
+body[data-mode="json"] {
+  font:
+    13px/1.55 ui-monospace,
+    SFMono-Regular,
+    "SF Mono",
+    Menlo,
+    Consolas,
+    monospace;
+}
+body[data-mode="json"] .tree {
+  padding: 14px 20px 60px;
+}
+body[data-mode="json"] .node {
+  padding-left: 1.2em;
+  position: relative;
+}
+body[data-mode="json"] .node > .toggle {
+  position: absolute;
+  left: 0;
+  top: 0;
+  cursor: pointer;
+  user-select: none;
+  width: 1em;
+  text-align: center;
+  color: rgba(128, 128, 128, 0.7);
+}
+body[data-mode="json"] .node.collapsed > .children {
+  display: none;
+}
+body[data-mode="json"] .node.collapsed > .ellipsis {
+  display: inline;
+  color: rgba(128, 128, 128, 0.6);
+}
+body[data-mode="json"] .ellipsis {
+  display: none;
+}
+body[data-mode="json"] .k {
+  color: #953800;
+}
+body[data-mode="json"] .s {
+  color: #0a3069;
+}
+body[data-mode="json"] .n {
+  color: #0550ae;
+}
+body[data-mode="json"] .b {
+  color: #8250df;
+}
+body[data-mode="json"] .nl {
+  color: #6e7781;
+}
+@media (prefers-color-scheme: dark) {
+  body[data-mode="json"] .k {
+    color: #ffa657;
+  }
+  body[data-mode="json"] .s {
+    color: #a5d6ff;
+  }
+  body[data-mode="json"] .n {
+    color: #79c0ff;
+  }
+  body[data-mode="json"] .b {
+    color: #d2a8ff;
+  }
+  body[data-mode="json"] .nl {
+    color: #8b949e;
+  }
+}
+body[data-mode="json"] mark {
+  background: #fff3a0;
+  color: inherit;
+  border-radius: 2px;
+}
+@media (prefers-color-scheme: dark) {
+  body[data-mode="json"] mark {
+    background: #4d3f00;
+    color: #fff;
+  }
+}
+
+.error {
+  padding: 24px;
+  color: #cf222e;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+}

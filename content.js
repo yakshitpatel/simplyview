@@ -240,8 +240,12 @@
     document.documentElement.style.overflow = "";
   };
 
-  const openInNewTab = (html) => {
-    const blob = new Blob([html], { type: "text/html" });
+  const openInNewTab = (payload) => {
+    // For HTML pass-through we can serve the user's HTML directly as a blob.
+    // For renderer-driven modes (markdown/code/json) there's no static HTML
+    // to point to — the renderer builds it on demand — so we skip new-tab.
+    if (payload.type !== "html") return;
+    const blob = new Blob([payload.raw], { type: "text/html" });
     window.open(URL.createObjectURL(blob), "_blank");
   };
 
@@ -252,13 +256,26 @@
       '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>',
   };
 
-  const showOverlay = (html, fileName, label) => {
+  /**
+   * @param {{type: string, raw: string, lang?: string}} payload
+   * @param {string} fileName
+   * @param {string} label
+   *
+   * Two iframe strategies:
+   *  - HTML pass-through: srcdoc + sandbox (null origin). The user's HTML can
+   *    contain anything, so we isolate it.
+   *  - Markdown / Code / JSON: load renderer.html from chrome-extension://
+   *    origin so its `<script src="vendor/...">` tags bypass Drive's parent
+   *    CSP. Content is delivered via postMessage after the page signals ready.
+   */
+  const showOverlay = (payload, fileName, label) => {
     closeOverlay();
     injectStyles();
 
     const overlay = document.createElement("div");
     overlay.id = OVERLAY_ID;
 
+    const showNewTab = payload.type === "html";
     overlay.innerHTML = `
       <div class="dr-frame-wrap">
         <div class="dr-bar">
@@ -267,11 +284,11 @@
             <span class="dr-title">${escapeHtml(fileName)}</span>
           </div>
           <div class="dr-actions">
-            <button data-act="newtab" title="Open in new tab" aria-label="Open in new tab">${ICONS.newTab}</button>
+            ${showNewTab ? `<button data-act="newtab" title="Open in new tab" aria-label="Open in new tab">${ICONS.newTab}</button>` : ""}
             <button data-act="close" title="Close (Esc)" aria-label="Close">${ICONS.close}</button>
           </div>
         </div>
-        <iframe sandbox="allow-scripts allow-forms allow-popups"></iframe>
+        <iframe></iframe>
       </div>
       <div class="dr-foot">
         <span class="dr-brand"><span class="dot"></span> SimplyView</span>
@@ -279,18 +296,38 @@
       </div>
     `;
 
-    // Use srcdoc — Drive's parent CSP blocks blob: URLs in iframe src, and a
-    // null-origin sandboxed iframe can't load extension-origin URLs without
-    // wider permissions. srcdoc creates a document inline, which works.
     const iframe = overlay.querySelector("iframe");
-    iframe.srcdoc = html;
+
+    if (payload.type === "html") {
+      // Untrusted user HTML — sandboxed, null origin.
+      iframe.setAttribute("sandbox", "allow-scripts allow-forms allow-popups");
+      iframe.srcdoc = payload.raw;
+    } else {
+      // Trusted renderer in the extension origin. No sandbox needed.
+      const onMessage = (e) => {
+        if (e.source !== iframe.contentWindow) return;
+        if (e.data?.app !== "simplyview" || e.data?.type !== "ready") return;
+        iframe.contentWindow.postMessage(
+          {
+            app: "simplyview",
+            type: payload.type,
+            raw: payload.raw,
+            lang: payload.lang,
+          },
+          "*",
+        );
+        window.removeEventListener("message", onMessage);
+      };
+      window.addEventListener("message", onMessage);
+      iframe.src = chrome.runtime.getURL("renderer.html");
+    }
 
     overlay.addEventListener("click", (e) => {
       if (e.target === overlay) closeOverlay();
     });
     overlay.querySelector('[data-act="close"]').onclick = closeOverlay;
-    overlay.querySelector('[data-act="newtab"]').onclick = () =>
-      openInNewTab(html);
+    const newTabBtn = overlay.querySelector('[data-act="newtab"]');
+    if (newTabBtn) newTabBtn.onclick = () => openInNewTab(payload);
 
     document.body.appendChild(overlay);
     document.documentElement.style.overflow = "hidden";
@@ -343,10 +380,11 @@
     setBtnLoading(btn, true);
     try {
       const raw = await fetchFile(fileId);
-      const html = await window.SimplyView.render(info.type, raw, {
-        lang: info.lang,
-      });
-      showOverlay(html, getFileName(), info.label);
+      showOverlay(
+        { type: info.type, raw, lang: info.lang },
+        getFileName(),
+        info.label,
+      );
     } catch (err) {
       console.error("[SimplyView]", err);
       const msg = /context invalidated/i.test(err.message)

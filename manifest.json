@@ -31,6 +31,9 @@
       "resources": [
         "icon-48.png",
         "icon-128.png",
+        "renderer.html",
+        "renderer.css",
+        "renderer-main.js",
         "vendor/markdown-it.min.js",
         "vendor/highlight.min.js",
         "vendor/github-dark.min.css",
