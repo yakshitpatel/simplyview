@@ -500,14 +500,21 @@
   // when Drive opens a file. Drive injects a [role="document"] element
   // (markdown / text previews) or a preview iframe (other types).
   // Watch body subtree for either of those mutations.
+  // Drive's modal opens in async phases — container element, then content,
+  // then aria-label, then visibility transition. A single delayed update can
+  // land before any one of those phases settles. Schedule several retries.
   let scheduled = false;
+  const RETRY_DELAYS = [60, 200, 500, 1000];
   const scheduleUpdate = () => {
     if (scheduled) return;
     scheduled = true;
-    setTimeout(() => {
-      scheduled = false;
-      update();
-    }, 150);
+    RETRY_DELAYS.forEach((d) => setTimeout(update, d));
+    setTimeout(
+      () => {
+        scheduled = false;
+      },
+      RETRY_DELAYS[RETRY_DELAYS.length - 1] + 50,
+    );
   };
   const isPreviewNode = (n) => {
     if (!n || n.nodeType !== 1) return false;
