@@ -27,9 +27,41 @@ body {
 }
 
 #content.loading {
-  padding: 40px 48px;
-  color: #71717a;
-  font-size: 14px;
+  padding: 48px 56px;
+  max-width: 920px;
+  margin: 0 auto;
+}
+.dr-skel {
+  height: 12px;
+  border-radius: 4px;
+  margin-bottom: 14px;
+  background: linear-gradient(
+    90deg,
+    rgba(128, 128, 128, 0.08) 0%,
+    rgba(128, 128, 128, 0.18) 50%,
+    rgba(128, 128, 128, 0.08) 100%
+  );
+  background-size: 200% 100%;
+  animation: dr-shimmer 1.4s ease-in-out infinite;
+}
+@media (prefers-color-scheme: dark) {
+  .dr-skel {
+    background: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.04) 0%,
+      rgba(255, 255, 255, 0.1) 50%,
+      rgba(255, 255, 255, 0.04) 100%
+    );
+    background-size: 200% 100%;
+  }
+}
+@keyframes dr-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
 }
 
 /* ───────────────────── Markdown mode ───────────────────── */

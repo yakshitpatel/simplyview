@@ -114,11 +114,8 @@
     const css = `
 /* shadcn-inspired minimal palette
    primary  : #005FFE  (used sparingly — button bg, pill, focus)
-   bg       : #ffffff
-   fg       : #09090b  (zinc-950)
-   muted    : #f4f4f5  (zinc-100)
-   muted-fg : #71717a  (zinc-500)
-   border   : #e4e4e7  (zinc-200) */
+   light:  bg #ffffff   fg #09090b   muted #f4f4f5   border #e4e4e7
+   dark:   bg #18181b   fg #fafafa   muted #27272a   border #3f3f46 */
 
 #${BTN_ID} {
   position: fixed;
@@ -136,8 +133,17 @@
   background: #005FFE;
   cursor: pointer;
   box-shadow: 0 1px 2px rgba(0, 95, 254, .18);
-  transition: background .14s ease, box-shadow .14s ease, transform .14s ease;
+  transition: background .14s ease, box-shadow .14s ease, transform .14s ease, top .18s ease, right .18s ease, bottom .18s ease;
+  animation: dr-btn-in .26s cubic-bezier(.16,1,.3,1);
 }
+/* In a Drive modal preview, Drive's own close button (X) lives at the top-
+   right of the modal — move our pill down so it doesn't overlap. */
+#${BTN_ID}.dr-in-modal {
+  top: auto;
+  right: 24px;
+  bottom: 24px;
+}
+@keyframes dr-btn-in { from { opacity: 0; transform: translateY(-4px) scale(.98); } to { opacity: 1; transform: none; } }
 #${BTN_ID}:hover {
   background: #0050D6;
   border-color: #0050D6;
@@ -169,11 +175,14 @@
   -webkit-backdrop-filter: blur(8px);
   display: flex; flex-direction: column;
   padding: 24px;
-  animation: dr-fade .14s ease-out;
+  animation: dr-fade .18s ease-out;
   font: 14px/1.5 ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
 }
 @keyframes dr-fade { from { opacity: 0; } to { opacity: 1; } }
-@keyframes dr-rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform:none; } }
+@keyframes dr-rise {
+  from { opacity: 0; transform: translateY(8px) scale(.985); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
 
 #${OVERLAY_ID} .dr-frame-wrap {
   flex: 1;
@@ -182,8 +191,8 @@
   border: 1px solid #e4e4e7;
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 24px 60px -12px rgba(0, 0, 0, 0.4);
-  animation: dr-rise .22s cubic-bezier(.16,1,.3,1);
+  box-shadow: 0 24px 60px -12px rgba(0, 0, 0, 0.45);
+  animation: dr-rise .28s cubic-bezier(.16,1,.3,1);
 }
 #${OVERLAY_ID} .dr-bar {
   display: flex; align-items: center; gap: 12px;
@@ -229,6 +238,48 @@
   flex: 1; width: 100%; border: 0; background: #ffffff;
 }
 
+#${OVERLAY_ID} .dr-error {
+  flex: 1;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 16px;
+  padding: 48px 24px;
+  background: #ffffff;
+  text-align: center;
+}
+#${OVERLAY_ID} .dr-error .dr-err-icon {
+  width: 44px; height: 44px; border-radius: 50%;
+  background: #fef2f2; color: #b91c1c;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+#${OVERLAY_ID} .dr-error .dr-err-icon svg { width: 22px; height: 22px; }
+#${OVERLAY_ID} .dr-error .dr-err-title {
+  font-weight: 600; font-size: 15px; color: #09090b;
+  letter-spacing: -0.01em;
+}
+#${OVERLAY_ID} .dr-error .dr-err-msg {
+  max-width: 460px;
+  color: #71717a; font-size: 13px; line-height: 1.55;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  background: #f4f4f5; border: 1px solid #e4e4e7; border-radius: 6px;
+  padding: 10px 12px;
+  word-break: break-word;
+}
+#${OVERLAY_ID} .dr-error .dr-err-actions { display: flex; gap: 8px; margin-top: 4px; }
+#${OVERLAY_ID} .dr-error button {
+  font: inherit; font-size: 13px; font-weight: 500;
+  border-radius: 7px; padding: 7px 14px;
+  cursor: pointer;
+  transition: background .12s ease, border-color .12s ease;
+}
+#${OVERLAY_ID} .dr-error button.primary {
+  background: #005FFE; color: #fff; border: 1px solid #005FFE;
+}
+#${OVERLAY_ID} .dr-error button.primary:hover { background: #0050D6; border-color: #0050D6; }
+#${OVERLAY_ID} .dr-error button.ghost {
+  background: transparent; color: #09090b; border: 1px solid #e4e4e7;
+}
+#${OVERLAY_ID} .dr-error button.ghost:hover { background: #f4f4f5; }
+
 #${OVERLAY_ID} .dr-foot {
   margin-top: 14px;
   display: flex; justify-content: space-between; align-items: center;
@@ -248,6 +299,33 @@
 #${OVERLAY_ID} .dr-foot .dr-brand .dot {
   width:7px;height:7px;border-radius:2px;
   background: #005FFE;
+}
+
+/* ───────── dark mode (auto via system preference) ───────── */
+@media (prefers-color-scheme: dark) {
+  #${OVERLAY_ID} { background: rgba(0, 0, 0, 0.72); }
+  #${OVERLAY_ID} .dr-frame-wrap {
+    background: #18181b; border-color: #27272a;
+    box-shadow: 0 24px 60px -12px rgba(0, 0, 0, 0.7);
+  }
+  #${OVERLAY_ID} .dr-bar {
+    background: #18181b; border-bottom-color: #27272a; color: #fafafa;
+  }
+  #${OVERLAY_ID} .dr-bar .dr-title { color: #fafafa; }
+  #${OVERLAY_ID} .dr-actions button { color: #a1a1aa; }
+  #${OVERLAY_ID} .dr-actions button:hover { background: #27272a; color: #fafafa; }
+  #${OVERLAY_ID} .dr-actions button:focus-visible {
+    box-shadow: 0 0 0 2px #18181b, 0 0 0 4px #005FFE;
+  }
+  #${OVERLAY_ID} iframe { background: #0d1117; }
+  #${OVERLAY_ID} .dr-error { background: #18181b; }
+  #${OVERLAY_ID} .dr-error .dr-err-icon { background: #3f1d1d; color: #fca5a5; }
+  #${OVERLAY_ID} .dr-error .dr-err-title { color: #fafafa; }
+  #${OVERLAY_ID} .dr-error .dr-err-msg {
+    background: #27272a; border-color: #3f3f46; color: #a1a1aa;
+  }
+  #${OVERLAY_ID} .dr-error button.ghost { color: #fafafa; border-color: #3f3f46; }
+  #${OVERLAY_ID} .dr-error button.ghost:hover { background: #27272a; }
 }
 `;
     const tag = document.createElement("style");
@@ -279,6 +357,7 @@
     const el = document.getElementById(OVERLAY_ID);
     if (el) el.remove();
     document.documentElement.style.overflow = "";
+    unbindEscape();
   };
 
   const openInNewTab = (payload) => {
@@ -295,28 +374,22 @@
       '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3h7v7"/><path d="M10 14L21 3"/><path d="M21 14v6a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h6"/></svg>',
     close:
       '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>',
+    expand:
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>',
+    error:
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>',
   };
 
-  /**
-   * @param {{type: string, raw: string, lang?: string}} payload
-   * @param {string} fileName
-   * @param {string} label
-   *
-   * Two iframe strategies:
-   *  - HTML pass-through: srcdoc + sandbox (null origin). The user's HTML can
-   *    contain anything, so we isolate it.
-   *  - Markdown / Code / JSON: load renderer.html from chrome-extension://
-   *    origin so its `<script src="vendor/...">` tags bypass Drive's parent
-   *    CSP. Content is delivered via postMessage after the page signals ready.
-   */
-  const showOverlay = (payload, fileName, label) => {
-    closeOverlay();
-    injectStyles();
-
+  /** Build the shared overlay shell (frame + header + footer). Returns
+   *  { overlay, frameWrap } for the caller to fill the body. */
+  const buildOverlay = (fileName, label, opts = {}) => {
     const overlay = document.createElement("div");
     overlay.id = OVERLAY_ID;
 
-    const showNewTab = payload.type === "html";
+    const inModal = !!opts.inModal;
+    const fileId = opts.fileId;
+    const canNewTab = opts.canNewTab;
+
     overlay.innerHTML = `
       <div class="dr-frame-wrap">
         <div class="dr-bar">
@@ -325,11 +398,12 @@
             <span class="dr-title">${escapeHtml(fileName)}</span>
           </div>
           <div class="dr-actions">
-            ${showNewTab ? `<button data-act="newtab" title="Open in new tab" aria-label="Open in new tab">${ICONS.newTab}</button>` : ""}
+            ${inModal && fileId ? `<button data-act="standalone" title="Open in standalone view" aria-label="Open in standalone view">${ICONS.expand}</button>` : ""}
+            ${canNewTab ? `<button data-act="newtab" title="Open in new tab" aria-label="Open in new tab">${ICONS.newTab}</button>` : ""}
             <button data-act="close" title="Close (Esc)" aria-label="Close">${ICONS.close}</button>
           </div>
         </div>
-        <iframe></iframe>
+        <div class="dr-body"></div>
       </div>
       <div class="dr-foot">
         <span class="dr-brand"><span class="dot"></span> SimplyView</span>
@@ -337,14 +411,47 @@
       </div>
     `;
 
-    const iframe = overlay.querySelector("iframe");
+    overlay.addEventListener("click", (e) => {
+      if (e.target === overlay) closeOverlay();
+    });
+    overlay.querySelector('[data-act="close"]').onclick = closeOverlay;
+    const standaloneBtn = overlay.querySelector('[data-act="standalone"]');
+    if (standaloneBtn && fileId) {
+      standaloneBtn.onclick = () => {
+        window.open(`https://drive.google.com/file/d/${fileId}/view`, "_blank");
+      };
+    }
+    return { overlay, body: overlay.querySelector(".dr-body") };
+  };
+
+  /**
+   * @param {{type: string, raw: string, lang?: string}} payload
+   * Strategy:
+   *  - HTML pass-through: srcdoc + sandbox (null origin). Untrusted user HTML.
+   *  - Markdown / Code / JSON: load renderer.html from chrome-extension://
+   *    so its `<script src="vendor/...">` tags bypass Drive's parent CSP.
+   *    Content arrives via postMessage after the page signals ready.
+   */
+  const showOverlay = (payload, fileName, label, opts = {}) => {
+    closeOverlay();
+    injectStyles();
+
+    const { overlay, body } = buildOverlay(fileName, label, {
+      inModal: opts.inModal,
+      fileId: opts.fileId,
+      canNewTab: payload.type === "html",
+    });
+
+    // Insert iframe into the body slot.
+    body.style.cssText = "flex:1; display:flex; min-height:0;";
+    const iframe = document.createElement("iframe");
+    iframe.style.cssText = "flex:1; width:100%; border:0; background:#fff;";
+    body.appendChild(iframe);
 
     if (payload.type === "html") {
-      // Untrusted user HTML — sandboxed, null origin.
       iframe.setAttribute("sandbox", "allow-scripts allow-forms allow-popups");
       iframe.srcdoc = payload.raw;
     } else {
-      // Trusted renderer in the extension origin. No sandbox needed.
       const onMessage = (e) => {
         if (e.source !== iframe.contentWindow) return;
         if (e.data?.app !== "simplyview" || e.data?.type !== "ready") return;
@@ -363,23 +470,58 @@
       iframe.src = chrome.runtime.getURL("renderer.html");
     }
 
-    overlay.addEventListener("click", (e) => {
-      if (e.target === overlay) closeOverlay();
-    });
-    overlay.querySelector('[data-act="close"]').onclick = closeOverlay;
     const newTabBtn = overlay.querySelector('[data-act="newtab"]');
     if (newTabBtn) newTabBtn.onclick = () => openInNewTab(payload);
 
     document.body.appendChild(overlay);
     document.documentElement.style.overflow = "hidden";
+    bindEscape();
+  };
 
-    const escHandler = (e) => {
-      if (e.key === "Escape") {
-        closeOverlay();
-        document.removeEventListener("keydown", escHandler);
-      }
-    };
+  /** Replace the overlay body with an error card. Used instead of alert(). */
+  const showError = (message, fileName, opts = {}) => {
+    closeOverlay();
+    injectStyles();
+
+    const { overlay, body } = buildOverlay(fileName || "Untitled", "Error", {
+      inModal: opts.inModal,
+      fileId: opts.fileId,
+      canNewTab: false,
+    });
+
+    body.innerHTML = `
+      <div class="dr-error">
+        <span class="dr-err-icon">${ICONS.error}</span>
+        <span class="dr-err-title">Couldn't load this file</span>
+        <pre class="dr-err-msg">${escapeHtml(message || "Unknown error")}</pre>
+        <div class="dr-err-actions">
+          ${opts.retry ? `<button class="primary" data-act="retry">Try again</button>` : ""}
+          <button class="ghost" data-act="dismiss">Close</button>
+        </div>
+      </div>
+    `;
+    body.querySelector('[data-act="dismiss"]').onclick = closeOverlay;
+    const retryBtn = body.querySelector('[data-act="retry"]');
+    if (retryBtn && opts.retry) retryBtn.onclick = () => opts.retry();
+
+    document.body.appendChild(overlay);
+    document.documentElement.style.overflow = "hidden";
+    bindEscape();
+  };
+
+  let escAttached = false;
+  const escHandler = (e) => {
+    if (e.key === "Escape") closeOverlay();
+  };
+  const bindEscape = () => {
+    if (escAttached) return;
+    escAttached = true;
     document.addEventListener("keydown", escHandler);
+  };
+  const unbindEscape = () => {
+    if (!escAttached) return;
+    escAttached = false;
+    document.removeEventListener("keydown", escHandler);
   };
 
   const escapeHtml = (s) =>
@@ -408,45 +550,72 @@
   // invalidated" until the user reloads the tab.
   const isOrphaned = () => !chrome.runtime?.id;
 
+  /** Are we currently looking at a Drive folder modal preview? */
+  const inModalPreview = () => !!detectModalPreview();
+
   const onClick = async (btn) => {
     if (isOrphaned()) {
-      alert(
-        "SimplyView was updated. Please refresh this Drive tab to keep using it.",
+      showError(
+        "SimplyView was just updated. Please refresh this Drive tab to keep using it.",
+        getFileName(),
+        { inModal: inModalPreview(), fileId: getFileId() },
       );
       return;
     }
     const fileId = getFileId();
     const info = getTypeInfo();
     if (!fileId || !info) return;
+    const fileName = getFileName();
+    const inModal = inModalPreview();
     setBtnLoading(btn, true);
     try {
       const raw = await fetchFile(fileId);
       showOverlay(
         { type: info.type, raw, lang: info.lang },
-        getFileName(),
+        fileName,
         info.label,
+        { inModal, fileId },
       );
     } catch (err) {
       console.error("[SimplyView]", err);
       const msg = /context invalidated/i.test(err.message)
-        ? "SimplyView was updated. Please refresh this Drive tab."
-        : err.message;
-      alert(`SimplyView: ${msg}`);
+        ? "SimplyView was just updated. Please refresh this Drive tab."
+        : err.message || String(err);
+      showError(msg, fileName, {
+        inModal,
+        fileId,
+        retry: () => onClick(btn),
+      });
     } finally {
       setBtnLoading(btn, false);
     }
   };
 
   const injectButton = () => {
-    if (document.getElementById(BTN_ID)) return;
-    if (!getFileId()) return;
+    const existing = document.getElementById(BTN_ID);
+    if (!getFileId()) {
+      if (existing) existing.remove();
+      return;
+    }
     const info = getTypeInfo();
-    if (!info) return;
+    if (!info) {
+      if (existing) existing.remove();
+      return;
+    }
     injectStyles();
+
+    const inModal = inModalPreview();
+    if (existing) {
+      // Keep the existing button, just toggle the modal-positioning class
+      // (the preview surface may have switched between standalone and modal).
+      existing.classList.toggle("dr-in-modal", inModal);
+      return;
+    }
 
     const btn = document.createElement("button");
     btn.id = BTN_ID;
-    btn.title = `View this ${info.label} file`;
+    if (inModal) btn.classList.add("dr-in-modal");
+    btn.title = `View this ${info.label} file (⌘⇧Y / Ctrl⇧Y)`;
     btn.innerHTML = `<span class="dr-ic"></span><span class="dr-label">View</span>`;
     btn.onclick = () => onClick(btn);
     document.body.appendChild(btn);
@@ -539,6 +708,30 @@
       }
     }
   }).observe(document.body, { childList: true, subtree: true });
+
+  // Keyboard shortcut — ⌘⇧Y (Mac) or Ctrl⇧Y (Win/Linux) triggers the View
+  // action on the current file, if supported. Y is unused by Drive's own
+  // shortcuts. Skips when an input/textarea/contenteditable is focused.
+  document.addEventListener(
+    "keydown",
+    (e) => {
+      if (e.key !== "Y" && e.key !== "y") return;
+      if (!e.shiftKey) return;
+      const mod = navigator.platform.includes("Mac") ? e.metaKey : e.ctrlKey;
+      if (!mod) return;
+      const ae = document.activeElement;
+      const tag = ae?.tagName;
+      if (tag === "INPUT" || tag === "TEXTAREA" || ae?.isContentEditable) {
+        return;
+      }
+      const btn = document.getElementById(BTN_ID);
+      if (!btn || btn.disabled) return;
+      e.preventDefault();
+      e.stopPropagation();
+      onClick(btn);
+    },
+    true, // capture, so we beat Drive's own handlers
+  );
 
   update();
 })();

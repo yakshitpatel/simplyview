@@ -17,7 +17,19 @@
     <link rel="stylesheet" href="renderer.css" />
   </head>
   <body>
-    <div id="content" class="loading">Loading…</div>
+    <div id="content" class="loading" aria-busy="true">
+      <div class="dr-skel" style="width: 38%; height: 22px"></div>
+      <div class="dr-skel" style="width: 92%"></div>
+      <div class="dr-skel" style="width: 78%"></div>
+      <div class="dr-skel" style="width: 86%"></div>
+      <div class="dr-skel" style="width: 54%"></div>
+      <div
+        class="dr-skel"
+        style="width: 28%; height: 22px; margin-top: 28px"
+      ></div>
+      <div class="dr-skel" style="width: 88%"></div>
+      <div class="dr-skel" style="width: 70%"></div>
+    </div>
     <script src="vendor/highlight.min.js"></script>
     <script src="vendor/markdown-it.min.js"></script>
     <script src="renderer-main.js"></script>
