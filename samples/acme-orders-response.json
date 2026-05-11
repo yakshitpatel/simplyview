@@ -1,0 +1,280 @@
+{
+  "request_id": "req_5e8c1b22a0f447a8",
+  "api_version": "2026-04-01",
+  "object": "list",
+  "url": "/v1/orders",
+  "has_more": true,
+  "pagination": {
+    "page": 1,
+    "per_page": 5,
+    "total": 248,
+    "next_cursor": "cur_01HW7XJK9R0M2T4N5P6Q7R8S9V",
+    "prev_cursor": null
+  },
+  "data": [
+    {
+      "id": "ord_01HXG8C3T1Y9NQ7Z2W4M5P0R8K",
+      "object": "order",
+      "created": "2026-05-11T17:42:08Z",
+      "status": "fulfilled",
+      "currency": "USD",
+      "amounts": {
+        "subtotal_cents": 12800,
+        "shipping_cents": 800,
+        "tax_cents": 1184,
+        "discount_cents": -1280,
+        "total_cents": 13504
+      },
+      "customer": {
+        "id": "cus_4FxK9aMpQ8r2WnH3",
+        "email": "priya.iyer@example.com",
+        "name": "Priya Iyer",
+        "is_returning": true,
+        "lifetime_value_cents": 184320,
+        "address": {
+          "line1": "548 Market St",
+          "line2": "Apt 4B",
+          "city": "San Francisco",
+          "state": "CA",
+          "postal_code": "94105",
+          "country": "US"
+        }
+      },
+      "items": [
+        {
+          "sku": "ATL-PRO-ANN",
+          "name": "Atlas Pro — Annual",
+          "quantity": 1,
+          "unit_price_cents": 9900,
+          "metadata": { "seat_count": 5, "renewal_date": "2027-05-11" }
+        },
+        {
+          "sku": "ATL-ADDON-AUDIT",
+          "name": "Audit Log add-on",
+          "quantity": 1,
+          "unit_price_cents": 2900,
+          "metadata": { "retention_days": 365 }
+        }
+      ],
+      "payment": {
+        "method": "card",
+        "card": {
+          "brand": "visa",
+          "last4": "4242",
+          "exp_month": 11,
+          "exp_year": 2028,
+          "country": "US"
+        },
+        "captured_at": "2026-05-11T17:42:11Z"
+      },
+      "fulfillment": {
+        "carrier": null,
+        "tracking_number": null,
+        "auto_provisioned": true,
+        "provisioned_at": "2026-05-11T17:42:14Z"
+      },
+      "flags": ["new_customer_upsell", "audit_addon_attached"]
+    },
+    {
+      "id": "ord_01HXG8B7N9X0M3Q5R7S8T2V4W6",
+      "object": "order",
+      "created": "2026-05-11T16:08:33Z",
+      "status": "pending_payment",
+      "currency": "EUR",
+      "amounts": {
+        "subtotal_cents": 4500,
+        "shipping_cents": 0,
+        "tax_cents": 945,
+        "discount_cents": 0,
+        "total_cents": 5445
+      },
+      "customer": {
+        "id": "cus_8KwQ3xLpR2m9TnV5",
+        "email": "jonas.becker@example.de",
+        "name": "Jonas Becker",
+        "is_returning": false,
+        "lifetime_value_cents": 0,
+        "address": {
+          "line1": "Marienburger Str. 12",
+          "city": "Berlin",
+          "state": "BE",
+          "postal_code": "10405",
+          "country": "DE"
+        }
+      },
+      "items": [
+        {
+          "sku": "ATL-STARTER-MO",
+          "name": "Atlas Starter — Monthly",
+          "quantity": 1,
+          "unit_price_cents": 4500,
+          "metadata": { "seat_count": 1 }
+        }
+      ],
+      "payment": {
+        "method": "sepa_debit",
+        "iban_last4": "8821",
+        "authorized": false,
+        "captured_at": null
+      },
+      "fulfillment": null,
+      "flags": ["awaiting_sepa_confirmation"]
+    },
+    {
+      "id": "ord_01HXG87W2C5R0N1P3Q6S8T0V2X",
+      "object": "order",
+      "created": "2026-05-11T11:24:01Z",
+      "status": "refunded",
+      "currency": "USD",
+      "amounts": {
+        "subtotal_cents": 29900,
+        "shipping_cents": 0,
+        "tax_cents": 2766,
+        "discount_cents": 0,
+        "total_cents": 32666,
+        "refunded_cents": -32666
+      },
+      "customer": {
+        "id": "cus_2BcZ9hKmN5p7VrW1",
+        "email": "support+test@acme.example",
+        "name": "Acme QA",
+        "is_returning": true,
+        "lifetime_value_cents": 0,
+        "address": null
+      },
+      "items": [
+        {
+          "sku": "ATL-ENT-ANN",
+          "name": "Atlas Enterprise — Annual",
+          "quantity": 1,
+          "unit_price_cents": 29900,
+          "metadata": { "seat_count": 50, "sso": true, "scim": true }
+        }
+      ],
+      "payment": {
+        "method": "card",
+        "card": {
+          "brand": "amex",
+          "last4": "0005",
+          "exp_month": 6,
+          "exp_year": 2029,
+          "country": "US"
+        },
+        "captured_at": "2026-05-11T11:24:04Z"
+      },
+      "fulfillment": {
+        "carrier": null,
+        "tracking_number": null,
+        "auto_provisioned": true,
+        "provisioned_at": "2026-05-11T11:24:08Z"
+      },
+      "refund": {
+        "id": "re_01HXG8K8R4T6V8X0Y2A4C6E8G0",
+        "reason": "test_order",
+        "issued_at": "2026-05-11T11:31:22Z",
+        "issued_by": "user_01H8A5B9C2D6E0F4G8H2J6K0L4"
+      },
+      "flags": ["test_mode", "auto_refund"]
+    },
+    {
+      "id": "ord_01HXG7Y3M8K0N2P5R7T9V1X3Z5",
+      "object": "order",
+      "created": "2026-05-11T08:55:46Z",
+      "status": "fulfilled",
+      "currency": "INR",
+      "amounts": {
+        "subtotal_cents": 79900,
+        "shipping_cents": 0,
+        "tax_cents": 14382,
+        "discount_cents": -7990,
+        "total_cents": 86292
+      },
+      "customer": {
+        "id": "cus_5GhT8aWcK1n3MqR6",
+        "email": "aanya@example.in",
+        "name": "Aanya Sharma",
+        "is_returning": true,
+        "lifetime_value_cents": 312880,
+        "address": {
+          "line1": "B-204 Lodha Splendora",
+          "city": "Thane",
+          "state": "MH",
+          "postal_code": "400607",
+          "country": "IN"
+        }
+      },
+      "items": [
+        {
+          "sku": "ATL-PRO-ANN",
+          "name": "Atlas Pro — Annual",
+          "quantity": 1,
+          "unit_price_cents": 79900,
+          "metadata": { "seat_count": 10, "renewal_date": "2027-05-11" }
+        }
+      ],
+      "payment": {
+        "method": "upi",
+        "vpa": "aanya@hdfcbank",
+        "captured_at": "2026-05-11T08:55:49Z"
+      },
+      "fulfillment": {
+        "auto_provisioned": true,
+        "provisioned_at": "2026-05-11T08:55:52Z"
+      },
+      "flags": ["upi_first_payment", "loyalty_discount_applied"]
+    },
+    {
+      "id": "ord_01HXG7T0J5H7G9F2E4D6C8B0A2",
+      "object": "order",
+      "created": "2026-05-10T22:14:09Z",
+      "status": "fulfilled",
+      "currency": "USD",
+      "amounts": {
+        "subtotal_cents": 9900,
+        "shipping_cents": 0,
+        "tax_cents": 0,
+        "discount_cents": 0,
+        "total_cents": 9900
+      },
+      "customer": {
+        "id": "cus_7QnL4xMrV8b1KsH9",
+        "email": "marco.s@example.com",
+        "name": "Marco Salinas",
+        "is_returning": false,
+        "lifetime_value_cents": 9900,
+        "address": {
+          "line1": "1212 SE Hawthorne Blvd",
+          "city": "Portland",
+          "state": "OR",
+          "postal_code": "97214",
+          "country": "US"
+        }
+      },
+      "items": [
+        {
+          "sku": "ATL-PRO-MO",
+          "name": "Atlas Pro — Monthly",
+          "quantity": 1,
+          "unit_price_cents": 9900,
+          "metadata": { "seat_count": 3 }
+        }
+      ],
+      "payment": {
+        "method": "card",
+        "card": {
+          "brand": "mastercard",
+          "last4": "5454",
+          "exp_month": 3,
+          "exp_year": 2027,
+          "country": "US"
+        },
+        "captured_at": "2026-05-10T22:14:11Z"
+      },
+      "fulfillment": {
+        "auto_provisioned": true,
+        "provisioned_at": "2026-05-10T22:14:13Z"
+      },
+      "flags": []
+    }
+  ]
+}

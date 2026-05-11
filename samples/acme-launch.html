@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Acme Atlas — Built for teams that ship</title>
+    <style>
+      :root {
+        --ink: #0b1220;
+        --paper: #fafaf7;
+        --accent: #ff5f3d;
+        --teal: #15a385;
+        --muted: #6b7280;
+        --rule: #e7e2d8;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+        background: var(--paper);
+        color: var(--ink);
+        line-height: 1.55;
+      }
+      .wrap {
+        max-width: 980px;
+        margin: 0 auto;
+        padding: 24px;
+      }
+
+      nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 20px 0 32px;
+        border-bottom: 1px solid var(--rule);
+      }
+      nav .brand {
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        font-size: 22px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+      nav .brand .dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 3px;
+        background: var(--accent);
+      }
+      nav ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        gap: 22px;
+        font-size: 14px;
+        color: var(--muted);
+      }
+      nav a {
+        color: inherit;
+        text-decoration: none;
+      }
+      nav a:hover {
+        color: var(--ink);
+      }
+
+      .hero {
+        padding: 80px 0 64px;
+      }
+      .eyebrow {
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: 999px;
+        background: rgba(255, 95, 61, 0.1);
+        color: var(--accent);
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        margin-bottom: 18px;
+      }
+      h1 {
+        font-size: clamp(40px, 5.5vw, 64px);
+        line-height: 1.05;
+        letter-spacing: -0.03em;
+        font-weight: 800;
+        margin: 0 0 18px;
+        max-width: 760px;
+      }
+      h1 em {
+        color: var(--accent);
+        font-style: normal;
+      }
+      .lede {
+        font-size: 18px;
+        color: var(--muted);
+        max-width: 580px;
+        margin: 0 0 32px;
+      }
+      .cta {
+        display: inline-flex;
+        gap: 10px;
+      }
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 13px 22px;
+        border-radius: 10px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: transform 0.15s ease;
+      }
+      .btn-primary {
+        background: var(--ink);
+        color: var(--paper);
+      }
+      .btn-primary:hover {
+        transform: translateY(-1px);
+      }
+      .btn-ghost {
+        color: var(--ink);
+        border: 1px solid var(--rule);
+      }
+      .btn-ghost:hover {
+        background: #fff;
+      }
+
+      .features {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+        margin: 56px 0;
+      }
+      .feature {
+        padding: 22px;
+        border: 1px solid var(--rule);
+        border-radius: 12px;
+        background: #fff;
+      }
+      .feature h3 {
+        margin: 0 0 6px;
+        font-size: 16px;
+        font-weight: 700;
+        letter-spacing: -0.005em;
+      }
+      .feature p {
+        margin: 0;
+        font-size: 14px;
+        color: var(--muted);
+      }
+      .feature .ic {
+        width: 34px;
+        height: 34px;
+        border-radius: 8px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        font-weight: 800;
+        margin-bottom: 12px;
+      }
+      .ic.a {
+        background: rgba(255, 95, 61, 0.12);
+        color: var(--accent);
+      }
+      .ic.b {
+        background: rgba(21, 163, 133, 0.12);
+        color: var(--teal);
+      }
+      .ic.c {
+        background: rgba(11, 18, 32, 0.08);
+        color: var(--ink);
+      }
+
+      .pricing {
+        border: 1px solid var(--rule);
+        border-radius: 16px;
+        overflow: hidden;
+        margin: 32px 0 56px;
+        background: #fff;
+      }
+      .pricing-head {
+        padding: 22px 24px;
+        display: flex;
+        justify-content: space-between;
+        align-items: end;
+        border-bottom: 1px solid var(--rule);
+      }
+      .pricing-head h2 {
+        margin: 0;
+        font-size: 20px;
+        letter-spacing: -0.01em;
+      }
+      .pricing-head .price {
+        font-size: 32px;
+        font-weight: 800;
+        letter-spacing: -0.03em;
+      }
+      .pricing-head .price small {
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--muted);
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      th,
+      td {
+        padding: 12px 24px;
+        text-align: left;
+        font-size: 14px;
+        border-top: 1px solid var(--rule);
+      }
+      th {
+        font-weight: 600;
+        color: var(--muted);
+        background: #fafaf7;
+      }
+      td.check {
+        color: var(--teal);
+        font-weight: 700;
+      }
+
+      footer {
+        padding: 32px 0 40px;
+        border-top: 1px solid var(--rule);
+        font-size: 13px;
+        color: var(--muted);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <nav>
+        <span class="brand"><span class="dot"></span> Acme Atlas</span>
+        <ul>
+          <li><a href="#features">Features</a></li>
+          <li><a href="#pricing">Pricing</a></li>
+          <li><a href="#docs">Docs</a></li>
+          <li><a href="#login">Log in</a></li>
+        </ul>
+      </nav>
+
+      <section class="hero">
+        <span class="eyebrow">Now shipping · v4.0</span>
+        <h1>Operations dashboards your team will <em>actually open.</em></h1>
+        <p class="lede">
+          Acme Atlas turns raw events into live, shareable dashboards in under a
+          minute. No SQL. No PagerDuty fatigue. Just answers.
+        </p>
+        <div class="cta">
+          <a class="btn btn-primary" href="#start">Start free →</a>
+          <a class="btn btn-ghost" href="#demo">Book a 15-min demo</a>
+        </div>
+      </section>
+
+      <section class="features" id="features">
+        <div class="feature">
+          <span class="ic a">A</span>
+          <h3>Live by default</h3>
+          <p>
+            Sub-second event ingest. Dashboards update as users tap, click, and
+            buy.
+          </p>
+        </div>
+        <div class="feature">
+          <span class="ic b">B</span>
+          <h3>Shareable in one click</h3>
+          <p>
+            Every chart has a public link, a Slack unfurl, and an embeddable
+            iframe.
+          </p>
+        </div>
+        <div class="feature">
+          <span class="ic c">C</span>
+          <h3>Costs that scale down</h3>
+          <p>Per-seat pricing only. No surprise bills when traffic spikes.</p>
+        </div>
+      </section>
+
+      <section class="pricing" id="pricing">
+        <div class="pricing-head">
+          <h2>Team plan</h2>
+          <span class="price">$29<small>/seat/mo</small></span>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>What's included</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Unlimited dashboards</td>
+              <td class="check">✓</td>
+            </tr>
+            <tr>
+              <td>Up to 50M events / month</td>
+              <td class="check">✓</td>
+            </tr>
+            <tr>
+              <td>Slack & Linear integrations</td>
+              <td class="check">✓</td>
+            </tr>
+            <tr>
+              <td>SOC 2 Type II</td>
+              <td class="check">✓</td>
+            </tr>
+            <tr>
+              <td>SSO + SCIM</td>
+              <td>Enterprise plan</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <footer>
+        © 2026 Acme Robotics, Inc. · 548 Market St #62103, San Francisco, CA ·
+        hello@acme.example
+      </footer>
+    </div>
+  </body>
+</html>
