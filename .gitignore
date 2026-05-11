@@ -23,6 +23,7 @@ venv/
 tmp/
 
 # Chrome Web Store packaging
+dist/
 *.zip
 *.crx
 *.pem
