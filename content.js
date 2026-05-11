@@ -445,7 +445,10 @@
     // Insert iframe into the body slot.
     body.style.cssText = "flex:1; display:flex; min-height:0;";
     const iframe = document.createElement("iframe");
-    iframe.style.cssText = "flex:1; width:100%; border:0; background:#fff;";
+    // No inline background — the .dr-frame-wrap CSS rule handles light/dark
+    // theming. An inline `background:#fff` would beat the prefers-color-scheme
+    // override and cause a white flash during trackpad overscroll/rubber-band.
+    iframe.style.cssText = "flex:1; width:100%; border:0;";
     body.appendChild(iframe);
 
     if (payload.type === "html") {

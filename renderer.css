@@ -9,6 +9,9 @@ html,
 body {
   margin: 0;
   padding: 0;
+  /* html bg has to match body so trackpad overscroll/rubber-band reveals
+     the correct theme color instead of the default white. */
+  background: #fff;
 }
 body {
   font-family:
@@ -17,12 +20,14 @@ body {
   font-size: 15px;
   line-height: 1.6;
   color: #1f2328;
-  background: #fff;
 }
 @media (prefers-color-scheme: dark) {
+  html,
+  body {
+    background: #0d1117;
+  }
   body {
     color: #e6edf3;
-    background: #0d1117;
   }
 }
 
