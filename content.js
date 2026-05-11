@@ -332,7 +332,18 @@
     if (label) label.textContent = loading ? "Loading…" : "View";
   };
 
+  // True if the extension was reloaded while this content script is still
+  // attached to the page — chrome.runtime APIs throw "Extension context
+  // invalidated" until the user reloads the tab.
+  const isOrphaned = () => !chrome.runtime?.id;
+
   const onClick = async (btn) => {
+    if (isOrphaned()) {
+      alert(
+        "SimplyView was updated. Please refresh this Drive tab to keep using it.",
+      );
+      return;
+    }
     const fileId = getFileId();
     const info = getTypeInfo();
     if (!fileId || !info) return;
@@ -345,7 +356,10 @@
       showOverlay(html, getFileName(), info.label);
     } catch (err) {
       console.error("[SimplyView]", err);
-      alert(`SimplyView: ${err.message}`);
+      const msg = /context invalidated/i.test(err.message)
+        ? "SimplyView was updated. Please refresh this Drive tab."
+        : err.message;
+      alert(`SimplyView: ${msg}`);
     } finally {
       setBtnLoading(btn, false);
     }
