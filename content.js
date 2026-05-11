@@ -13,23 +13,60 @@
 
   const FILE_EXT_RX = /\.[a-z0-9]{1,8}$/i;
 
-  /** Find the Drive preview iframe (present when a file is open in a modal
-   *  on /drive/u/0/folders/... — the URL doesn't change in that mode). */
-  const findPreviewIframe = () => {
-    for (const f of document.querySelectorAll("iframe")) {
-      if (/\/file\/d\//.test(f.src || "")) return f;
+  /**
+   * When Drive opens a file in a modal preview on /drive/u/0/folders/<id>,
+   * the URL doesn't change. The file the user is viewing is the currently
+   * selected gridcell in the folder grid — it carries `data-id` (the file
+   * ID) and an `aria-label` that starts with the filename. We also confirm
+   * the preview is actually showing by checking for the [role="document"]
+   * element Drive renders for the modal.
+   *
+   * Returns { fileId, filename } if a modal preview is open, else null.
+   */
+  const detectModalPreview = () => {
+    const docEl = document.querySelector(
+      '[role="document"][aria-label^="Displaying "]',
+    );
+    if (!docEl) return null;
+    const labelMatch = (docEl.getAttribute("aria-label") || "").match(
+      /^Displaying\s+(.+?)\s*\.?$/,
+    );
+    if (!labelMatch) return null;
+    const filename = labelMatch[1].trim();
+
+    // Match by filename (so internal modal navigation arrows still resolve).
+    for (const cell of document.querySelectorAll(
+      '[role="gridcell"][data-id][data-target="doc"]',
+    )) {
+      const cellLabel = cell.getAttribute("aria-label") || "";
+      if (
+        cellLabel === filename ||
+        cellLabel.startsWith(filename + " ") ||
+        cellLabel.startsWith(filename + " ")
+      ) {
+        const fileId = cell.getAttribute("data-id");
+        if (fileId) return { fileId, filename };
+      }
     }
-    return null;
+    // Fallback: trust the aria-selected cell if nothing matched by name.
+    const selected = document.querySelector(
+      '[role="gridcell"][aria-selected="true"][data-id][data-target="doc"]',
+    );
+    if (selected) {
+      return {
+        fileId: selected.getAttribute("data-id"),
+        filename,
+      };
+    }
+    return { fileId: null, filename };
   };
 
   const getFileId = () => {
     // Standalone view: /file/d/<id>/view
     const m = location.pathname.match(/\/file\/d\/([^/]+)/);
     if (m) return m[1];
-    // Modal preview: extract from the embedded iframe src
-    const f = findPreviewIframe();
-    const fm = f && (f.src || "").match(/\/file\/d\/([^/?]+)/);
-    return fm ? fm[1] : null;
+    // Modal preview
+    return detectModalPreview()?.fileId || null;
   };
 
   const getFileName = () => {
@@ -37,26 +74,10 @@
     const t = (document.title || "").replace(/ - Google Drive$/, "").trim();
     if (t && FILE_EXT_RX.test(t)) return t;
 
-    // Modal preview — Drive sets the iframe's title attribute to the filename
-    // for accessibility. This is the most reliable signal.
-    const f = findPreviewIframe();
-    if (f && f.title && FILE_EXT_RX.test(f.title)) return f.title;
-
-    // Fallback selectors used by Drive's preview modal across versions.
-    const sels = [
-      'div[role="dialog"] [aria-label]',
-      "[data-tooltip][aria-label]",
-      '[aria-label][role="presentation"]',
-    ];
-    for (const sel of sels) {
-      for (const el of document.querySelectorAll(sel)) {
-        const text = (
-          el.getAttribute("aria-label") ||
-          el.textContent ||
-          ""
-        ).trim();
-        if (text && FILE_EXT_RX.test(text) && text.length < 200) return text;
-      }
+    // Modal preview
+    const modal = detectModalPreview();
+    if (modal?.filename && FILE_EXT_RX.test(modal.filename)) {
+      return modal.filename;
     }
 
     return null;
@@ -456,8 +477,9 @@
   window.addEventListener("popstate", update);
 
   // Modal preview detection — on /drive/u/0/folders/* the URL doesn't change
-  // when Drive opens a file. It just adds a preview <iframe> to the DOM.
-  // Watch body subtree for iframe-related mutations only (cheap filter).
+  // when Drive opens a file. Drive injects a [role="document"] element
+  // (markdown / text previews) or a preview iframe (other types).
+  // Watch body subtree for either of those mutations.
   let scheduled = false;
   const scheduleUpdate = () => {
     if (scheduled) return;
@@ -467,18 +489,23 @@
       update();
     }, 150);
   };
+  const isPreviewNode = (n) => {
+    if (!n || n.nodeType !== 1) return false;
+    if (n.tagName === "IFRAME") return true;
+    if (n.getAttribute?.("role") === "document") return true;
+    if (n.querySelector?.('iframe, [role="document"]')) return true;
+    return false;
+  };
   new MutationObserver((mutations) => {
     for (const m of mutations) {
       for (const n of m.addedNodes) {
-        if (n.nodeType !== 1) continue;
-        if (n.tagName === "IFRAME" || n.querySelector?.("iframe")) {
+        if (isPreviewNode(n)) {
           scheduleUpdate();
           return;
         }
       }
       for (const n of m.removedNodes) {
-        if (n.nodeType !== 1) continue;
-        if (n.tagName === "IFRAME" || n.querySelector?.("iframe")) {
+        if (isPreviewNode(n)) {
           scheduleUpdate();
           return;
         }
