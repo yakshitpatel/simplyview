@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SimplyView — Privacy Policy</title>
+    <meta name="theme-color" content="#005FFE" />
+    <link rel="icon" type="image/png" href="/lab/simplyview/icon.png" />
+    <style>
+      :root {
+        color-scheme: light dark;
+        --primary: #005ffe;
+        --bg: #ffffff;
+        --fg: #09090b;
+        --muted: #71717a;
+        --border: #e4e4e7;
+        --surface: #fafafa;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #09090b;
+          --fg: #fafafa;
+          --muted: #a1a1aa;
+          --border: #27272a;
+          --surface: #18181b;
+        }
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family:
+          ui-sans-serif,
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          Roboto,
+          sans-serif;
+        color: var(--fg);
+        background: var(--bg);
+        line-height: 1.65;
+        letter-spacing: -0.005em;
+      }
+      .container {
+        max-width: 720px;
+        margin: 0 auto;
+        padding: 0 24px;
+      }
+
+      .crumb {
+        padding: 28px 0 12px;
+        font-size: 13px;
+        color: var(--muted);
+      }
+      .crumb a {
+        color: inherit;
+        text-decoration: none;
+      }
+      .crumb a:hover {
+        color: var(--fg);
+      }
+      .crumb .sep {
+        margin: 0 6px;
+        opacity: 0.5;
+      }
+
+      header.page {
+        padding: 12px 0 32px;
+        border-bottom: 1px solid var(--border);
+      }
+      header.page h1 {
+        font-size: 32px;
+        font-weight: 700;
+        letter-spacing: -0.025em;
+        margin: 0 0 6px;
+      }
+      header.page .updated {
+        font-size: 13px;
+        color: var(--muted);
+      }
+
+      main {
+        padding: 28px 0 60px;
+      }
+      h2 {
+        font-size: 19px;
+        font-weight: 600;
+        letter-spacing: -0.015em;
+        margin: 32px 0 12px;
+      }
+      h2:first-of-type {
+        margin-top: 0;
+      }
+      p {
+        margin: 0 0 14px;
+        font-size: 15.5px;
+      }
+      ul {
+        padding-left: 22px;
+        margin: 0 0 14px;
+      }
+      ul li {
+        margin-bottom: 6px;
+        font-size: 15px;
+      }
+      a {
+        color: var(--primary);
+        text-decoration: none;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+      code {
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 13px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        padding: 1px 6px;
+      }
+      strong {
+        color: var(--fg);
+        font-weight: 600;
+      }
+      .none-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 18px 20px;
+        margin: 0 0 22px;
+      }
+      .none-card .big {
+        font-size: 22px;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        margin: 0 0 6px;
+      }
+
+      footer {
+        padding: 24px 0 48px;
+        border-top: 1px solid var(--border);
+        text-align: center;
+        font-size: 13px;
+        color: var(--muted);
+      }
+      footer a {
+        color: inherit;
+        text-decoration: underline;
+        text-decoration-color: var(--border);
+        text-underline-offset: 3px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="crumb">
+        <a href="/">yakshit patel</a>
+        <span class="sep">/</span>
+        <a href="/lab">lab</a>
+        <span class="sep">/</span>
+        <a href="/lab/simplyview">simplyview</a>
+        <span class="sep">/</span>
+        <span>privacy</span>
+      </div>
+
+      <header class="page">
+        <h1>SimplyView Privacy Policy</h1>
+        <div class="updated">Last updated: May 12, 2026</div>
+      </header>
+
+      <main>
+        <p>
+          SimplyView is a Chrome extension that renders Google Drive files
+          (HTML, Markdown, JSON, and 30+ programming languages) inline in your
+          browser so you can actually view them instead of staring at source
+          code.
+        </p>
+
+        <h2>What data we collect</h2>
+        <div class="none-card">
+          <div class="big">None.</div>
+          <p style="margin: 0; color: var(--muted)">
+            SimplyView does not collect, transmit, sell, or store any user data
+            — anywhere.
+          </p>
+        </div>
+        <ul>
+          <li>We have no servers.</li>
+          <li>We have no analytics.</li>
+          <li>We have no third-party SDKs.</li>
+          <li>We never log, ship, or report any data you view.</li>
+        </ul>
+
+        <h2>How SimplyView works</h2>
+        <p>
+          When you click the <strong>View</strong> button on a supported Drive
+          file:
+        </p>
+        <ul>
+          <li>
+            The extension fetches the file from <code>drive.google.com</code>
+            using your existing Drive session cookies (the same authentication
+            your browser already has).
+          </li>
+          <li>
+            The file content stays in your browser. It is rendered in a
+            sandboxed iframe and shown to you in an overlay.
+          </li>
+          <li>
+            The overlay closes when you press Esc or click outside; the content
+            is discarded.
+          </li>
+        </ul>
+        <p>
+          No request is made to any server outside of
+          <code>drive.google.com</code> and
+          <code>drive.usercontent.google.com</code>. We never see your files.
+        </p>
+
+        <h2>Permissions we request</h2>
+        <ul>
+          <li>
+            <code>host_permissions: drive.google.com/*</code> — to inject the
+            View button into Drive's file viewer and folder modal preview.
+          </li>
+          <li>
+            <code>host_permissions: drive.usercontent.google.com/*</code> —
+            Drive sometimes redirects file downloads through this host; we
+            follow it so the file can be rendered.
+          </li>
+        </ul>
+        <p>
+          These hosts cover the <em>minimum</em> needed for SimplyView to
+          function and match the single-purpose declaration of the extension.
+        </p>
+
+        <h2>Chrome Web Store Limited Use compliance</h2>
+        <p>
+          SimplyView's use of Drive data complies with the
+          <a
+            href="https://developer.chrome.com/docs/webstore/program-policies/user-data-faq"
+            >Chrome Web Store User Data Policy</a
+          >, including the <strong>Limited Use</strong> requirements:
+        </p>
+        <ul>
+          <li>
+            We only access the file content you explicitly invoke the extension
+            on.
+          </li>
+          <li>
+            We do not use Drive data for advertising or to build user profiles.
+          </li>
+          <li>
+            We do not allow humans to read your data, with the narrow standard
+            exceptions (your explicit consent, security investigations, or to
+            comply with applicable law) — none of which apply because we have no
+            servers and never receive your data in the first place.
+          </li>
+          <li>
+            We do not transfer your data to third parties for any purpose.
+          </li>
+        </ul>
+
+        <h2>Open source</h2>
+        <p>
+          The full source code of SimplyView is published at
+          <a href="https://github.com/yakshitpatel/simplyview"
+            >github.com/yakshitpatel/simplyview</a
+          >. You can audit exactly what the extension does, line by line.
+        </p>
+
+        <h2>Contact</h2>
+        <p>
+          Questions or reports:
+          <a href="mailto:yakshitpatel2109@gmail.com"
+            >yakshitpatel2109@gmail.com</a
+          >. For security issues, please put <code>[SECURITY]</code> in the
+          subject line.
+        </p>
+      </main>
+
+      <footer>
+        <a href="/lab/simplyview">← back to SimplyView</a>
+      </footer>
+    </div>
+  </body>
+</html>

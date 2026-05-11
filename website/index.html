@@ -1,0 +1,330 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SimplyView — actually view your Drive files</title>
+    <meta
+      name="description"
+      content="Chrome extension that renders Google Drive files inline — HTML, Markdown, JSON, and 30+ programming languages."
+    />
+    <meta name="theme-color" content="#005FFE" />
+    <link rel="icon" type="image/png" href="/lab/simplyview/icon.png" />
+
+    <meta
+      property="og:title"
+      content="SimplyView — actually view your Drive files"
+    />
+    <meta
+      property="og:description"
+      content="Drive shows your files as code. SimplyView renders them properly — HTML, Markdown, JSON, and 30+ programming languages."
+    />
+    <meta property="og:image" content="/lab/simplyview/og.png" />
+    <meta property="og:url" content="https://yakshitpatel.com/lab/simplyview" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <style>
+      :root {
+        color-scheme: light dark;
+        --primary: #005ffe;
+        --primary-hover: #0050d6;
+        --bg: #ffffff;
+        --fg: #09090b;
+        --muted: #71717a;
+        --border: #e4e4e7;
+        --surface: #fafafa;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #09090b;
+          --fg: #fafafa;
+          --muted: #a1a1aa;
+          --border: #27272a;
+          --surface: #18181b;
+        }
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family:
+          ui-sans-serif,
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          Roboto,
+          sans-serif;
+        color: var(--fg);
+        background: var(--bg);
+        line-height: 1.55;
+        letter-spacing: -0.005em;
+      }
+      .container {
+        max-width: 760px;
+        margin: 0 auto;
+        padding: 0 24px;
+      }
+
+      /* ── breadcrumb ── */
+      .crumb {
+        padding: 28px 0 8px;
+        font-size: 13px;
+        color: var(--muted);
+      }
+      .crumb a {
+        color: inherit;
+        text-decoration: none;
+      }
+      .crumb a:hover {
+        color: var(--fg);
+      }
+      .crumb .sep {
+        margin: 0 6px;
+        opacity: 0.5;
+      }
+
+      /* ── hero ── */
+      .hero {
+        padding: 32px 0 56px;
+        text-align: center;
+      }
+      .hero .mark {
+        width: 96px;
+        height: 96px;
+        margin: 0 auto 28px;
+        display: block;
+      }
+      .hero h1 {
+        font-size: clamp(34px, 5vw, 48px);
+        font-weight: 700;
+        letter-spacing: -0.03em;
+        line-height: 1.1;
+        margin: 0 0 16px;
+      }
+      .hero p.tagline {
+        font-size: 18px;
+        color: var(--muted);
+        max-width: 480px;
+        margin: 0 auto 32px;
+      }
+      .cta {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 22px;
+        border: 1px solid var(--primary);
+        background: var(--primary);
+        color: #fff;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 15px;
+        text-decoration: none;
+        box-shadow: 0 1px 2px rgba(0, 95, 254, 0.18);
+        transition:
+          background 0.14s ease,
+          box-shadow 0.14s ease,
+          transform 0.14s ease;
+      }
+      .cta:hover {
+        background: var(--primary-hover);
+        border-color: var(--primary-hover);
+        box-shadow: 0 4px 14px rgba(0, 95, 254, 0.28);
+        transform: translateY(-1px);
+      }
+      .cta-secondary {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-left: 12px;
+        padding: 12px 18px;
+        border: 1px solid var(--border);
+        background: transparent;
+        color: var(--fg);
+        border-radius: 10px;
+        font-weight: 500;
+        font-size: 14px;
+        text-decoration: none;
+        transition: background 0.14s ease;
+      }
+      .cta-secondary:hover {
+        background: var(--surface);
+      }
+
+      /* ── sections ── */
+      section {
+        padding: 40px 0;
+        border-top: 1px solid var(--border);
+      }
+      h2 {
+        font-size: 22px;
+        font-weight: 600;
+        letter-spacing: -0.015em;
+        margin: 0 0 20px;
+      }
+      .feature-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 20px;
+      }
+      .feature {
+        padding: 18px 20px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+      }
+      .feature h3 {
+        margin: 0 0 6px;
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--fg);
+      }
+      .feature p {
+        margin: 0;
+        font-size: 13px;
+        color: var(--muted);
+        line-height: 1.5;
+      }
+
+      .types {
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 12.5px;
+        color: var(--muted);
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 16px 18px;
+      }
+      .types b {
+        color: var(--fg);
+        font-weight: 600;
+      }
+
+      /* ── footer ── */
+      footer {
+        padding: 40px 0 60px;
+        text-align: center;
+        font-size: 13px;
+        color: var(--muted);
+      }
+      footer a {
+        color: inherit;
+        text-decoration: underline;
+        text-decoration-color: var(--border);
+        text-underline-offset: 3px;
+      }
+      footer a:hover {
+        color: var(--fg);
+      }
+      footer .dots {
+        margin: 0 8px;
+        opacity: 0.5;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="crumb">
+        <a href="/">yakshit patel</a>
+        <span class="sep">/</span>
+        <a href="/lab">lab</a>
+        <span class="sep">/</span>
+        <span>simplyview</span>
+      </div>
+
+      <header class="hero">
+        <img
+          class="mark"
+          src="/lab/simplyview/icon.png"
+          alt="SimplyView icon"
+        />
+        <h1>Actually view your Drive files.</h1>
+        <p class="tagline">
+          Drive shows your <code>.md</code>, <code>.json</code>,
+          <code>.py</code>, <code>.html</code> as plain source. SimplyView
+          renders them properly — without leaving the tab.
+        </p>
+        <a
+          class="cta"
+          href="https://chromewebstore.google.com/detail/YOUR-EXTENSION-ID"
+          >Add to Chrome — free</a
+        >
+        <a
+          class="cta-secondary"
+          href="https://github.com/yakshitpatel/simplyview"
+          >Source on GitHub →</a
+        >
+      </header>
+
+      <section>
+        <h2>What it renders</h2>
+        <p class="types">
+          <b>HTML</b> · <b>Markdown</b> (GFM, syntax-highlighted code blocks,
+          task lists) · <b>JSON</b> (collapsible tree, search, copy formatted) ·
+          <b>30+ code languages</b> — JS, TS, Python, Ruby, Go, Rust, Java,
+          Kotlin, Swift, C, C++, C#, PHP, CSS, YAML, TOML, SQL, Shell, XML,
+          Diff, Lua, R, Scala, Perl, Dart, GraphQL, Protobuf, Dockerfile, …
+        </p>
+      </section>
+
+      <section>
+        <h2>What's different</h2>
+        <div class="feature-grid">
+          <div class="feature">
+            <h3>Modal preview support</h3>
+            <p>
+              Works in the standalone file view <em>and</em> in Drive's folder
+              modal preview — not just one or the other.
+            </p>
+          </div>
+          <div class="feature">
+            <h3>No data leaves your browser</h3>
+            <p>
+              No servers, no analytics, no tracking. The extension fetches files
+              only from drive.google.com using your existing session.
+            </p>
+          </div>
+          <div class="feature">
+            <h3>Dark mode</h3>
+            <p>
+              Auto-matches your system theme. Renderer, overlay chrome, and
+              syntax highlighting all swap together.
+            </p>
+          </div>
+          <div class="feature">
+            <h3>Keyboard shortcut</h3>
+            <p>
+              <kbd>⌘⇧Y</kbd> on Mac, <kbd>Ctrl⇧Y</kbd> on Windows/Linux. Skip
+              the mouse.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>Privacy</h2>
+        <p>
+          SimplyView has no servers and collects no data. The full source code
+          is open at
+          <a href="https://github.com/yakshitpatel/simplyview"
+            >github.com/yakshitpatel/simplyview</a
+          >. See the
+          <a href="/lab/simplyview/privacy">full privacy policy</a> for the
+          Chrome Web Store Limited Use disclosure.
+        </p>
+      </section>
+
+      <footer>
+        Built by <a href="/">Yakshit Patel</a>
+        <span class="dots">·</span>
+        <a href="https://github.com/yakshitpatel/simplyview">github</a>
+        <span class="dots">·</span>
+        <a href="/lab/simplyview/privacy">privacy</a>
+      </footer>
+    </div>
+  </body>
+</html>
