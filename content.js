@@ -13,52 +13,72 @@
 
   const FILE_EXT_RX = /\.[a-z0-9]{1,8}$/i;
 
-  /**
-   * When Drive opens a file in a modal preview on /drive/u/0/folders/<id>,
-   * the URL doesn't change. The file the user is viewing is the currently
-   * selected gridcell in the folder grid — it carries `data-id` (the file
-   * ID) and an `aria-label` that starts with the filename. We also confirm
-   * the preview is actually showing by checking for the [role="document"]
-   * element Drive renders for the modal.
-   *
-   * Returns { fileId, filename } if a modal preview is open, else null.
-   */
-  const detectModalPreview = () => {
-    const docEl = document.querySelector(
-      '[role="document"][aria-label^="Displaying "]',
-    );
-    if (!docEl) return null;
-    const labelMatch = (docEl.getAttribute("aria-label") || "").match(
-      /^Displaying\s+(.+?)\s*\.?$/,
-    );
-    if (!labelMatch) return null;
-    const filename = labelMatch[1].trim();
+  /** True if `el` is in the layout tree and has non-zero size. Drive keeps
+   *  stale preview elements around in DOM after the user navigates inside a
+   *  modal, so we have to filter for the actually-visible one. */
+  const isVisible = (el) => {
+    if (!el) return false;
+    const rect = el.getBoundingClientRect();
+    if (rect.width === 0 || rect.height === 0) return false;
+    if (el.offsetParent === null && getComputedStyle(el).position !== "fixed") {
+      return false;
+    }
+    return true;
+  };
 
-    // Match by filename (so internal modal navigation arrows still resolve).
+  /** Match a filename against the folder grid; return data-id of the cell. */
+  const fileIdFromGridByName = (filename) => {
+    if (!filename) return null;
     for (const cell of document.querySelectorAll(
       '[role="gridcell"][data-id][data-target="doc"]',
     )) {
       const cellLabel = cell.getAttribute("aria-label") || "";
-      if (
-        cellLabel === filename ||
-        cellLabel.startsWith(filename + " ") ||
-        cellLabel.startsWith(filename + " ")
-      ) {
-        const fileId = cell.getAttribute("data-id");
-        if (fileId) return { fileId, filename };
+      if (cellLabel === filename || cellLabel.startsWith(filename + " ")) {
+        return cell.getAttribute("data-id");
       }
     }
-    // Fallback: trust the aria-selected cell if nothing matched by name.
-    const selected = document.querySelector(
-      '[role="gridcell"][aria-selected="true"][data-id][data-target="doc"]',
-    );
-    if (selected) {
-      return {
-        fileId: selected.getAttribute("data-id"),
-        filename,
-      };
+    return null;
+  };
+
+  /**
+   * Drive's modal preview surface varies by file type:
+   *   - markdown / text / code: inline [role="document"] block
+   *   - html / pdf / image:     an <iframe src="/file/d/<id>/preview...">
+   *
+   * Drive also leaves stale preview elements in the DOM as you navigate
+   * between files inside the modal, so we filter for the visible one —
+   * otherwise we keep returning the file the user first opened.
+   *
+   * Returns { fileId, filename } if a modal preview is currently displayed,
+   * else null.
+   */
+  const detectModalPreview = () => {
+    // 1. Iframe preview (html / pdf / image) — file ID is in iframe.src
+    for (const f of document.querySelectorAll("iframe")) {
+      if (!/\/file\/d\//.test(f.src || "")) continue;
+      if (!isVisible(f)) continue;
+      const m = f.src.match(/\/file\/d\/([^/?]+)/);
+      if (!m) continue;
+      const filename = f.title && FILE_EXT_RX.test(f.title) ? f.title : null;
+      return { fileId: m[1], filename };
     }
-    return { fileId: null, filename };
+
+    // 2. Inline text preview ([role="document"]) — filename is in aria-label
+    //    as "Displaying <filename>". Match it to a grid cell for the ID.
+    for (const docEl of document.querySelectorAll(
+      '[role="document"][aria-label^="Displaying "]',
+    )) {
+      if (!isVisible(docEl)) continue;
+      const labelMatch = (docEl.getAttribute("aria-label") || "").match(
+        /^Displaying\s+(.+?)\s*\.?$/,
+      );
+      if (!labelMatch) continue;
+      const filename = labelMatch[1].trim();
+      const fileId = fileIdFromGridByName(filename);
+      if (fileId) return { fileId, filename };
+    }
+
+    return null;
   };
 
   const getFileId = () => {
