@@ -12,7 +12,10 @@
   },
   "content_scripts": [
     {
-      "matches": ["https://drive.google.com/file/d/*"],
+      "matches": [
+        "https://drive.google.com/file/d/*",
+        "https://drive.google.com/drive/*"
+      ],
       "js": ["renderers.js", "content.js"],
       "run_at": "document_idle"
     }

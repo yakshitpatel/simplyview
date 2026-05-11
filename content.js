@@ -11,14 +11,55 @@
 
   const ICON_URL = chrome.runtime.getURL("icon-48.png");
 
+  const FILE_EXT_RX = /\.[a-z0-9]{1,8}$/i;
+
+  /** Find the Drive preview iframe (present when a file is open in a modal
+   *  on /drive/u/0/folders/... — the URL doesn't change in that mode). */
+  const findPreviewIframe = () => {
+    for (const f of document.querySelectorAll("iframe")) {
+      if (/\/file\/d\//.test(f.src || "")) return f;
+    }
+    return null;
+  };
+
   const getFileId = () => {
+    // Standalone view: /file/d/<id>/view
     const m = location.pathname.match(/\/file\/d\/([^/]+)/);
-    return m ? m[1] : null;
+    if (m) return m[1];
+    // Modal preview: extract from the embedded iframe src
+    const f = findPreviewIframe();
+    const fm = f && (f.src || "").match(/\/file\/d\/([^/?]+)/);
+    return fm ? fm[1] : null;
   };
 
   const getFileName = () => {
+    // Standalone view: <title> is "filename.ext - Google Drive"
     const t = (document.title || "").replace(/ - Google Drive$/, "").trim();
-    return t || "Untitled";
+    if (t && FILE_EXT_RX.test(t)) return t;
+
+    // Modal preview — Drive sets the iframe's title attribute to the filename
+    // for accessibility. This is the most reliable signal.
+    const f = findPreviewIframe();
+    if (f && f.title && FILE_EXT_RX.test(f.title)) return f.title;
+
+    // Fallback selectors used by Drive's preview modal across versions.
+    const sels = [
+      'div[role="dialog"] [aria-label]',
+      "[data-tooltip][aria-label]",
+      '[aria-label][role="presentation"]',
+    ];
+    for (const sel of sels) {
+      for (const el of document.querySelectorAll(sel)) {
+        const text = (
+          el.getAttribute("aria-label") ||
+          el.textContent ||
+          ""
+        ).trim();
+        if (text && FILE_EXT_RX.test(text) && text.length < 200) return text;
+      }
+    }
+
+    return null;
   };
 
   const getTypeInfo = () => {
@@ -358,6 +399,37 @@
 
   // Browser back/forward (popstate is reachable from the isolated world).
   window.addEventListener("popstate", update);
+
+  // Modal preview detection — on /drive/u/0/folders/* the URL doesn't change
+  // when Drive opens a file. It just adds a preview <iframe> to the DOM.
+  // Watch body subtree for iframe-related mutations only (cheap filter).
+  let scheduled = false;
+  const scheduleUpdate = () => {
+    if (scheduled) return;
+    scheduled = true;
+    setTimeout(() => {
+      scheduled = false;
+      update();
+    }, 150);
+  };
+  new MutationObserver((mutations) => {
+    for (const m of mutations) {
+      for (const n of m.addedNodes) {
+        if (n.nodeType !== 1) continue;
+        if (n.tagName === "IFRAME" || n.querySelector?.("iframe")) {
+          scheduleUpdate();
+          return;
+        }
+      }
+      for (const n of m.removedNodes) {
+        if (n.nodeType !== 1) continue;
+        if (n.tagName === "IFRAME" || n.querySelector?.("iframe")) {
+          scheduleUpdate();
+          return;
+        }
+      }
+    }
+  }).observe(document.body, { childList: true, subtree: true });
 
   update();
 })();
