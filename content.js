@@ -234,16 +234,10 @@
       );
     });
 
-  let currentBlobUrl = null;
-
   const closeOverlay = () => {
     const el = document.getElementById(OVERLAY_ID);
     if (el) el.remove();
     document.documentElement.style.overflow = "";
-    if (currentBlobUrl) {
-      URL.revokeObjectURL(currentBlobUrl);
-      currentBlobUrl = null;
-    }
   };
 
   const openInNewTab = (html) => {
@@ -285,12 +279,11 @@
       </div>
     `;
 
-    // Use Blob URL instead of srcdoc — srcdoc chokes on large (250KB+) inline
-    // payloads and gets weird with HTML-entity escaping. Blob URLs are clean.
+    // Use srcdoc — Drive's parent CSP blocks blob: URLs in iframe src, and a
+    // null-origin sandboxed iframe can't load extension-origin URLs without
+    // wider permissions. srcdoc creates a document inline, which works.
     const iframe = overlay.querySelector("iframe");
-    const blob = new Blob([html], { type: "text/html" });
-    currentBlobUrl = URL.createObjectURL(blob);
-    iframe.src = currentBlobUrl;
+    iframe.srcdoc = html;
 
     overlay.addEventListener("click", (e) => {
       if (e.target === overlay) closeOverlay();
