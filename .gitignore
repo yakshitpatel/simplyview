@@ -1,0 +1,29 @@
+# macOS
+.DS_Store
+._.DS_Store
+**/.DS_Store
+
+# Editor / IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Python (for build_icons.py)
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+
+# Build artifacts / temp
+*.log
+.tmp/
+tmp/
+
+# Chrome Web Store packaging
+*.zip
+*.crx
+*.pem
+key.pem
