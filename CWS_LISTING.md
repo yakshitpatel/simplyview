@@ -19,35 +19,39 @@ Actually view your Drive files. Renders HTML, Markdown, JSON, and 30+ programmin
 
 ## Description (max 16,000 chars)
 
-> Rewritten 2026-05-12 after first submission was rejected for "excessive
-> keywords" (the laundry-list of file extensions tripped a spam filter).
-> Keep this version free of `.md / .json / .py / …` enumerations and long
-> comma-separated language lists.
+> Rewritten 2026-05-12 (v2) after first submission was rejected for
+> "excessive keywords" — the .md / .json / .py / .ts / .yaml / .sql list
+> and the comma-separated language enumeration tripped Google's spam
+> filter. This version uses category words ("Markdown / HTML / JSON /
+> source code") instead of file extensions, and follows PrintFriendly's
+> narrative structure: hook → who it's for → sectioned features → links.
 
 ```
-Google Drive treats most source files as plain text. Open a Markdown file and you see asterisks and dashes. Open a JSON file and you see a wall of escaped strings. Open an HTML file and you see tags rendered as code instead of as a page. SimplyView fixes that.
+Render Markdown, HTML, JSON, and source code files inline in Google Drive — exactly the way they were meant to be read.
 
-Click View on any supported file — whether you're in Drive's standalone file viewer or the folder modal preview — and SimplyView renders it the way it should be read:
+Drive opens most non-Google file formats as plain source. SimplyView is a free Chrome extension that adds a "View" button to Drive's file viewer and folder modal preview, so the file you click actually renders instead of dumping its source at you.
 
-— HTML pages render exactly as they would in a browser.
-— Markdown is presented with GitHub-style typography, syntax-highlighted code blocks, rendered task lists, and proper tables.
-— JSON becomes a collapsible tree with search, expand-all, and copy-formatted options.
-— Source code in common programming languages is shown with syntax highlighting, line numbers, and a copy button.
+Built for developers, product managers, writers, designers, and anyone whose Drive isn't 100% Google Docs. If you store READMEs, design specs, configs, API responses, or scripts in Drive, SimplyView turns Drive into a viewer you'd actually want to use.
 
-What makes SimplyView different
+🪄 Real Rendering, Not Source
+Markdown shows up as formatted text with proper headings, tables, task lists, and syntax-highlighted code blocks — the same look you'd get on GitHub. HTML pages render the way a browser would render them. JSON becomes a collapsible tree you can search and copy from. Source code files are highlighted with line numbers and a one-click copy button.
 
-— Works inside Drive's standalone file viewer AND the folder modal preview. Not one or the other.
-— Nothing leaves your browser. No servers, no analytics, no tracking. The extension fetches files only through your existing Drive session — the same authentication Drive itself uses.
-— Dark mode follows your system theme automatically. The rendered page, the overlay, and the syntax highlighting all swap together.
-— A keyboard shortcut opens files without reaching for the mouse.
-— A one-click "open standalone" action lets you jump from the folder modal to a dedicated tab when you need to share or screenshot.
+🪟 Works Everywhere in Drive
+SimplyView shows up in two places most preview extensions miss. The standalone file viewer (where you land when you open a Drive link) AND the modal preview that opens when you double-click a file inside a folder. Navigate between files inside the modal and SimplyView keeps up.
 
-Privacy
+🌙 Built-In Dark Mode
+The viewer follows your system theme automatically. Rendered content, the overlay, and syntax highlighting all swap together — no flash of light, no manual toggle.
 
-SimplyView has no servers and collects no data of any kind. The full source code is open and auditable on GitHub. Anyone can read exactly what the extension does, line by line.
+⌨️ Keyboard-First
+Press Cmd+Shift+Y on Mac or Ctrl+Shift+Y on Windows and Linux to open the current file without reaching for the mouse. Press Esc to close.
 
-Source code: github.com/yakshitpatel/simplyview
-Privacy policy: github.com/yakshitpatel/simplyview/blob/main/PRIVACY.md
+🔒 Nothing Leaves Your Browser
+SimplyView has no servers, no analytics, no tracking, no third-party SDKs. It fetches files only from Google Drive, using the session your browser is already signed into. The full source code is published on GitHub — you can audit exactly what runs inside the extension.
+
+Get back the hour a week you spend squinting at raw source code in Drive.
+
+📃 Privacy Policy: https://github.com/yakshitpatel/simplyview/blob/main/PRIVACY.md
+🛠 Source Code: https://github.com/yakshitpatel/simplyview
 ```
 
 ## Category
