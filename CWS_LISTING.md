@@ -19,38 +19,35 @@ Actually view your Drive files. Renders HTML, Markdown, JSON, and 30+ programmin
 
 ## Description (max 16,000 chars)
 
+> Rewritten 2026-05-12 after first submission was rejected for "excessive
+> keywords" (the laundry-list of file extensions tripped a spam filter).
+> Keep this version free of `.md / .json / .py / …` enumerations and long
+> comma-separated language lists.
+
 ```
-Google Drive shows .md, .json, .py, .ts, .yaml, .sql and dozens of other file types as plain source code. SimplyView fixes that.
+Google Drive treats most source files as plain text. Open a Markdown file and you see asterisks and dashes. Open a JSON file and you see a wall of escaped strings. Open an HTML file and you see tags rendered as code instead of as a page. SimplyView fixes that.
 
-Click "View" on any supported file — in the Drive file viewer or right in the folder modal preview — and SimplyView renders it properly:
+Click View on any supported file — whether you're in Drive's standalone file viewer or the folder modal preview — and SimplyView renders it the way it should be read:
 
-✦ HTML files — fully rendered, just like opening them in a browser
-✦ Markdown — GitHub-flavored render with syntax-highlighted code blocks and task lists
-✦ JSON — collapsible tree with search, expand-all, copy formatted
-✦ 30+ programming languages — syntax highlighting, line numbers, copy button
-  (JS, TS, Python, Ruby, Go, Rust, Java, Kotlin, Swift, C/C++/C#, PHP, CSS,
-   YAML, TOML, SQL, Shell, XML, Diff, Lua, R, Scala, Perl, Dart, GraphQL, …)
+— HTML pages render exactly as they would in a browser.
+— Markdown is presented with GitHub-style typography, syntax-highlighted code blocks, rendered task lists, and proper tables.
+— JSON becomes a collapsible tree with search, expand-all, and copy-formatted options.
+— Source code in common programming languages is shown with syntax highlighting, line numbers, and a copy button.
 
-How it's different
-─────────────────────
-• Works in the standalone file view AND in Drive's folder modal preview
-• No download required — fetches the file with your existing Drive session
-• No data leaves your browser — no servers, no analytics, no tracking
-• Dark mode that auto-matches your system theme
-• Keyboard shortcut: ⌘⇧Y (Mac) or Ctrl⇧Y (Windows/Linux)
-• Open standalone for sharing — one click from inside the folder modal
+What makes SimplyView different
+
+— Works inside Drive's standalone file viewer AND the folder modal preview. Not one or the other.
+— Nothing leaves your browser. No servers, no analytics, no tracking. The extension fetches files only through your existing Drive session — the same authentication Drive itself uses.
+— Dark mode follows your system theme automatically. The rendered page, the overlay, and the syntax highlighting all swap together.
+— A keyboard shortcut opens files without reaching for the mouse.
+— A one-click "open standalone" action lets you jump from the folder modal to a dedicated tab when you need to share or screenshot.
 
 Privacy
-─────────────────────
-SimplyView has no servers and no analytics. The entire extension runs in your
-browser. It fetches files only from drive.google.com using your existing
-session cookies — exactly the same authentication Drive itself uses.
 
-Source code is open and auditable at:
-github.com/yakshitpatel/simplyview
+SimplyView has no servers and collects no data of any kind. The full source code is open and auditable on GitHub. Anyone can read exactly what the extension does, line by line.
 
-Privacy policy:
-yakshitpatel.com/lab/simplyview/privacy
+Source code: github.com/yakshitpatel/simplyview
+Privacy policy: github.com/yakshitpatel/simplyview/blob/main/PRIVACY.md
 ```
 
 ## Category
